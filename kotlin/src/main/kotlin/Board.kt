@@ -4,9 +4,19 @@ private val MINIMUM_WINNING_SCORE = Score(4)
 private val MINIMUM_ADVANTAGES_SCORE = Score(3)
 private const val MINIMUM_WINNING_GAP = 2
 
-class Table {
-    private val player1Score = Score()
-    private val player2Score = Score()
+class Board(private val player1: Player, private val player2: Player) {
+    private val player1Score = player1.score
+    private val player2Score = player2.score
+
+    fun getCurrentStage(): Stage {
+        if (isGameFinished()) {
+            return Stage.GAME_WON
+        }
+        if (isInAdvantagesPhase()) {
+            return Stage.ADVANTAGES
+        }
+        return Stage.BEFORE_ADVANTAGES
+    }
 
     fun areScoresEven() = player1Score == player2Score
     fun isPlayer1Winning() = player1Score > player2Score
@@ -16,7 +26,7 @@ class Table {
     fun player1ScoreName() = player1Score.toString()
     fun player2ScoreName() = player2Score.toString()
 
-    fun isGameFinished(): Boolean {
+    private fun isGameFinished(): Boolean {
         if (player1Score < MINIMUM_WINNING_SCORE && player2Score < MINIMUM_WINNING_SCORE) {
             return false
         }
@@ -24,7 +34,7 @@ class Table {
         return getScoreDifference() >= MINIMUM_WINNING_GAP
     }
 
-    fun isInAdvantagesPhase(): Boolean {
+    private fun isInAdvantagesPhase(): Boolean {
         if (isGameFinished()) {
             return false
         }

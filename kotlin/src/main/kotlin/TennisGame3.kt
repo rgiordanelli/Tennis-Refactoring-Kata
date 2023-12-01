@@ -1,12 +1,14 @@
 class TennisGame3(private val player1Name: String, private val player2Name: String) : TennisGame {
-    private val table = Table()
+    private val board = Board(Player(player1Name), Player(player2Name))
 
     override fun getScore(): String {
-        if (table.isGameFinished()) {
+        val stage = board.getCurrentStage()
+
+        if (stage == Stage.GAME_WON) {
             return "Win for ${getWinningPlayerName()}"
         }
 
-        if (table.isInAdvantagesPhase()) {
+        if (stage == Stage.ADVANTAGES) {
             return scoreDuringAdvantagesPhase()
         }
 
@@ -14,7 +16,7 @@ class TennisGame3(private val player1Name: String, private val player2Name: Stri
     }
 
     private fun scoreDuringAdvantagesPhase(): String {
-        if (table.areScoresEven()) {
+        if (board.areScoresEven()) {
             return "Deuce"
         }
 
@@ -22,15 +24,15 @@ class TennisGame3(private val player1Name: String, private val player2Name: Stri
     }
 
     private fun scoreBeforeAdvantagesPhase(): String {
-        if (table.areScoresEven()) {
-            return "${table.player1ScoreName()}-All"
+        if (board.areScoresEven()) {
+            return "${board.player1ScoreName()}-All"
         }
 
-        return "${table.player1ScoreName()}-${table.player2ScoreName()}"
+        return "${board.player1ScoreName()}-${board.player2ScoreName()}"
     }
 
     private fun getWinningPlayerName(): String {
-        if (table.isPlayer1Winning()) {
+        if (board.isPlayer1Winning()) {
             return player1Name
         }
 
@@ -39,9 +41,9 @@ class TennisGame3(private val player1Name: String, private val player2Name: Stri
 
     override fun wonPoint(playerName: String) {
         if (playerName === "player1") {
-            table.incrementPlayer1Score()
+            board.incrementPlayer1Score()
         } else {
-            table.incrementPlayer2Score()
+            board.incrementPlayer2Score()
         }
     }
 
